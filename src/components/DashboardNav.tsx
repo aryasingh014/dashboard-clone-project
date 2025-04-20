@@ -1,5 +1,6 @@
 
 import {
+  LayoutDashboard,
   MonitorIcon,
   HistoryIcon
 } from "lucide-react"
@@ -16,6 +17,11 @@ import {
 } from "@/components/ui/sidebar"
 
 const items = [
+  {
+    title: "Dashboard",
+    icon: LayoutDashboard,
+    url: "/",
+  },
   {
     title: "Real-Time Monitor",
     icon: MonitorIcon,
