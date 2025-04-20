@@ -1,10 +1,8 @@
+
 import {
   LayoutDashboard,
-  Settings,
-  User,
-  Files,
-  CalendarIcon,
-  MonitorIcon
+  MonitorIcon,
+  HistoryIcon
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
@@ -25,30 +23,15 @@ const items = [
     url: "/",
   },
   {
-    title: "PLC Monitor",
+    title: "Real-Time Monitor",
     icon: MonitorIcon,
-    url: "/plc",
+    url: "/plc/realtime",
   },
   {
-    title: "Calendar",
-    icon: CalendarIcon,
-    url: "/calendar",
-  },
-  {
-    title: "Files",
-    icon: Files,
-    url: "/files",
-  },
-  {
-    title: "Profile",
-    icon: User,
-    url: "/profile",
-  },
-  {
-    title: "Settings",
-    icon: Settings,
-    url: "/settings",
-  },
+    title: "History Data",
+    icon: HistoryIcon,
+    url: "/plc/history",
+  }
 ]
 
 export function DashboardNav() {
