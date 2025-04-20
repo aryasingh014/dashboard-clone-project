@@ -1,4 +1,3 @@
-
 import React, { useState } from "react"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { DashboardNav } from "@/components/DashboardNav"
@@ -11,18 +10,9 @@ import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
 } from "@/components/ui/chart"
 import {
   Line,
@@ -32,7 +22,6 @@ import {
   YAxis,
 } from "recharts"
 
-// Node IDs available for monitoring
 const nodeIds = [
   "ns=3;i=1001",
   "ns=3;i=1002",
@@ -43,8 +32,6 @@ const nodeIds = [
   "ns=3;i=1007",
 ]
 
-// Sample historical data generator
-// In a real application, this would be fetched from an API
 const generateHistoricalData = (nodes: string[], fromDate: Date, toDate: Date) => {
   const days = Math.ceil((toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)) + 1
   const result = []
@@ -58,7 +45,6 @@ const generateHistoricalData = (nodes: string[], fromDate: Date, toDate: Date) =
     }
     
     nodes.forEach(node => {
-      // Generate random but consistent data for each node and date
       const seed = node.charCodeAt(node.length - 1) + currentDate.getDate()
       dataPoint[node] = Math.sin(seed * 0.1) * 50 + 50 + Math.random() * 10
     })
@@ -69,7 +55,6 @@ const generateHistoricalData = (nodes: string[], fromDate: Date, toDate: Date) =
   return result
 }
 
-// Node Color mapping for consistency
 const nodeColors: Record<string, string> = {
   "ns=3;i=1001": "#3b82f6",
   "ns=3;i=1002": "#22c55e",
@@ -87,7 +72,6 @@ export default function PLCHistory() {
   const [historyData, setHistoryData] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
-  // Add or remove node from selection
   const toggleNodeSelection = (nodeId: string) => {
     if (selectedNodes.includes(nodeId)) {
       setSelectedNodes(selectedNodes.filter(id => id !== nodeId))
@@ -96,31 +80,17 @@ export default function PLCHistory() {
     }
   }
   
-  // Load historical data
   const loadHistoricalData = () => {
     if (!fromDate || !toDate || selectedNodes.length === 0) return
     
     setIsLoading(true)
     
-    // Simulate an API call with a delay
     setTimeout(() => {
       const data = generateHistoricalData(selectedNodes, fromDate, toDate)
       setHistoryData(data)
       setIsLoading(false)
     }, 1000)
   }
-  
-  // Generate chart config from selected nodes
-  const chartConfig = selectedNodes.reduce((config, nodeId) => {
-    config[nodeId] = {
-      theme: {
-        light: nodeColors[nodeId],
-        dark: nodeColors[nodeId],
-      },
-      label: `Node ${nodeId.split(';')[1]}`,
-    }
-    return config
-  }, {} as Record<string, any>)
 
   return (
     <SidebarProvider>
@@ -158,7 +128,7 @@ export default function PLCHistory() {
                         {fromDate ? format(fromDate, "PPP") : "Select date"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
+                    <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
                         selected={fromDate}
@@ -184,7 +154,7 @@ export default function PLCHistory() {
                         {toDate ? format(toDate, "PPP") : "Select date"}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
+                    <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
                         mode="single"
                         selected={toDate}
@@ -235,37 +205,35 @@ export default function PLCHistory() {
           </Card>
           
           {historyData.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Historical Data Visualization</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[400px]">
-                  <ChartContainer config={chartConfig}>
-                    <ChartLegend content={<ChartLegendContent />} />
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={historyData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
-                        <XAxis dataKey="date" />
-                        <YAxis />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        {selectedNodes.map(nodeId => (
-                          <Line
-                            key={nodeId}
-                            type="monotone"
-                            dataKey={nodeId}
-                            name={nodeId}
-                            stroke={`var(--color-${nodeId})`}
-                            strokeWidth={2}
-                            dot={{ r: 3 }}
-                            activeDot={{ r: 5 }}
-                          />
-                        ))}
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="grid gap-6">
+              {selectedNodes.map(nodeId => (
+                <Card key={nodeId}>
+                  <CardHeader>
+                    <CardTitle>Node {nodeId}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[300px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <ChartContainer config={{ [nodeId]: { theme: { light: nodeColors[nodeId], dark: nodeColors[nodeId] } } }}>
+                          <LineChart data={historyData}>
+                            <XAxis dataKey="date" />
+                            <YAxis domain={['auto', 'auto']} />
+                            <ChartTooltip content={<ChartTooltipContent />} />
+                            <Line
+                              type="monotone"
+                              dataKey={nodeId}
+                              stroke={nodeColors[nodeId]}
+                              strokeWidth={2}
+                              dot={false}
+                            />
+                          </LineChart>
+                        </ChartContainer>
+                      </ResponsiveContainer>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           )}
           
           {historyData.length === 0 && !isLoading && (
