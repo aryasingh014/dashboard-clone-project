@@ -1,14 +1,26 @@
-// Update this page (the content is just a fallback if you fail to update the page)
 
-const Index = () => {
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { Overview } from "@/components/Overview"
+import { DashboardNav } from "@/components/DashboardNav"
+
+export default function Index() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <DashboardNav />
+        <main className="flex-1 p-8">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+              <p className="text-muted-foreground">
+                Welcome back to your dashboard overview.
+              </p>
+            </div>
+            <SidebarTrigger />
+          </div>
+          <Overview />
+        </main>
       </div>
-    </div>
-  );
-};
-
-export default Index;
+    </SidebarProvider>
+  )
+}
