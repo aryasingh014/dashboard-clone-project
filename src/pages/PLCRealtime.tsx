@@ -1,11 +1,10 @@
-
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { DashboardNav } from "@/components/DashboardNav"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { NodeMonitor } from "@/components/plc/NodeMonitor"
+import { cn } from "@/lib/utils"
 
-// Node IDs available for monitoring
 const nodeIds = [
   "ns=3;i=1001",
   "ns=3;i=1002",
