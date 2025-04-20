@@ -1,10 +1,10 @@
-
 import {
   LayoutDashboard,
   Settings,
   User,
   Files,
-  CalendarIcon
+  CalendarIcon,
+  MonitorIcon
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
@@ -23,6 +23,11 @@ const items = [
     title: "Dashboard",
     icon: LayoutDashboard,
     url: "/",
+  },
+  {
+    title: "PLC Monitor",
+    icon: MonitorIcon,
+    url: "/plc",
   },
   {
     title: "Calendar",
